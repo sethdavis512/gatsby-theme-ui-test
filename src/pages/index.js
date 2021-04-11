@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { Formik, Form, Field } from 'formik';
 import { Box, Button, Input, Label } from 'theme-ui';
 
 const Constants = {
@@ -13,83 +14,58 @@ const encode = data => {
         .join('&');
 };
 
-const useForm = initialValues => {
-    const [formState, setFormState] = useState(initialValues);
-
-    const handleFieldChange = ({ target }) => {
-        setFormState({
-            ...formState,
-            [target.name]: target.value
-        });
-    };
-
-    return [formState, handleFieldChange];
-};
-
 const IndexPage = () => {
-    const [formState, setFormState] = useForm({
-        firstName: '',
-        lastName: '',
-        email: ''
-    });
-
-    const handleFormSubmit = event => {
-        event.preventDefault();
-
-        fetch('/', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: encode({ 'form-name': Constants.FORM_NAME, ...formState })
-        })
-            .then(() => alert('Success!'))
-            .catch(error => alert(error));
-    };
-
     return (
-        <main>
-            <form
+        <Formik
+            initialValues={{
+                firstName: '',
+                lastName: '',
+                email: ''
+            }}
+            onSubmit={(values, actions) => {
+                fetch('/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: encode({
+                        'form-name': Constants.FORM_NAME,
+                        ...values
+                    })
+                })
+                    .then(() => alert('Success!'))
+                    .catch(error => alert(error));
+
+                actions.resetForm();
+            }}
+        >
+            <Form
                 name={Constants.FORM_NAME}
                 method="post"
                 data-netlify="true"
                 data-netlify-honeypot="bot-field"
-                onSubmit={handleFormSubmit}
             >
                 {/* You still need to add the hidden input with the form name to your JSX form */}
-                <input
+                <Field
                     type="hidden"
                     name="my-form-name"
                     value={Constants.FORM_NAME}
                 />
                 <Box sx={{ mb: 4 }}>
                     <Label htmlFor="firstName">First Name</Label>
-                    <Input
-                        id="firstName"
-                        name="firstName"
-                        value={formState.firstName}
-                        onChange={setFormState}
-                    />
+                    <Field as={Input} id="firstName" name="firstName" />
                 </Box>
                 <Box sx={{ mb: 4 }}>
-                    <Label htmlFor="firstName">Last Name</Label>
-                    <Input
-                        id="lastName"
-                        name="lastName"
-                        value={formState.lastName}
-                        onChange={setFormState}
-                    />
+                    <Label htmlFor="lastName">Last Name</Label>
+                    <Field as={Input} id="lastName" name="lastName" />
                 </Box>
                 <Box sx={{ mb: 4 }}>
                     <Label htmlFor="email">Email</Label>
-                    <Input
-                        id="email"
-                        name="email"
-                        value={formState.email}
-                        onChange={setFormState}
-                    />
+                    <Field as={Input} id="email" name="email" />
                 </Box>
                 <Button type="submit">Contact Me!</Button>
-            </form>
-        </main>
+            </Form>
+        </Formik>
     );
 };
 

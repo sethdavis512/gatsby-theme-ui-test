@@ -71,7 +71,7 @@ const IndexPage = () => {
                             'Content-Type': 'application/x-www-form-urlencoded'
                         },
                         body: encode({
-                            'form-name': Constants.FORM_NAME,
+                            'form-name': Constants.NETLIFY_FORM_NAME,
                             ...values
                         })
                     })

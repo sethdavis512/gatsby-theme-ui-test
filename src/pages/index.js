@@ -54,36 +54,32 @@ const ErrorText = ({ children }) => (
 );
 
 const IndexPage = () => {
-    const initialValues = {
-        firstName: '',
-        lastName: '',
-        email: '',
-        message: ''
-    };
-
-    const handleOnSubmit = (values, actions) => {
-        fetch('/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: encode({
-                'form-name': Constants.FORM_NAME,
-                ...values
-            })
-        })
-            .then(() => {
-                actions.resetForm();
-            })
-            .catch(error => alert(error));
-    };
-
     return (
         <Box as="main" sx={{ maxWidth: '600px', mx: 'auto', my: 4 }}>
             <Formik
-                initialValues={initialValues}
+                initialValues={{
+                    firstName: '',
+                    lastName: '',
+                    email: '',
+                    message: ''
+                }}
                 validationSchema={ContactSchema}
-                onSubmit={handleOnSubmit}
+                onSubmit={(values, actions) => {
+                    fetch('/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: encode({
+                            'form-name': Constants.FORM_NAME,
+                            ...values
+                        })
+                    })
+                        .then(() => {
+                            actions.resetForm();
+                        })
+                        .catch(error => alert(error));
+                }}
             >
                 <Form
                     name={Constants.NETLIFY_FORM_NAME}

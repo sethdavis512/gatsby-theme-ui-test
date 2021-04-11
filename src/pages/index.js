@@ -1,6 +1,6 @@
 import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { Box, Button, Input, Label, Text } from 'theme-ui';
+import { Box, Button, Input, Label, Text, Textarea } from 'theme-ui';
 import * as Yup from 'yup';
 
 const Constants = {
@@ -16,7 +16,8 @@ const ContactSchema = Yup.object().shape({
         .min(2, 'Too Short!')
         .max(70, 'Too Long!')
         .required('Required'),
-    email: Yup.string().email('Invalid email').required('Required')
+    email: Yup.string().email('Invalid email').required('Required'),
+    message: Yup.string().min(2, 'Too Short!').max(500, 'Too Long!')
 });
 
 const encode = data => {
@@ -27,6 +28,27 @@ const encode = data => {
         .join('&');
 };
 
+const ComposedField = ({
+    as = Input,
+    helpText,
+    id,
+    label,
+    name,
+    type = 'text',
+    sx
+}) => (
+    <Box sx={{ mb: 3, ...sx }}>
+        <Label htmlFor={id || name}>{label}</Label>
+        {helpText && (
+            <Text as="span" sx={{ fontSize: 1 }}>
+                {helpText}
+            </Text>
+        )}
+        <Field as={as} id={id || name} name={name} type={type} />
+        <ErrorMessage component={ErrorText} name={name} />
+    </Box>
+);
+
 const ErrorText = ({ children }) => (
     <Text sx={{ color: 'red' }}>{children}</Text>
 );
@@ -35,7 +57,8 @@ const IndexPage = () => {
     const initialValues = {
         firstName: '',
         lastName: '',
-        email: ''
+        email: '',
+        message: ''
     };
 
     const handleOnSubmit = (values, actions) => {
@@ -74,21 +97,16 @@ const IndexPage = () => {
                         name="my-form-name"
                         value={Constants.NETLIFY_FORM_NAME}
                     />
-                    <Box sx={{ mb: 3 }}>
-                        <Label htmlFor="firstName">First Name</Label>
-                        <Field as={Input} id="firstName" name="firstName" />
-                        <ErrorMessage component={ErrorText} name="firstName" />
-                    </Box>
-                    <Box sx={{ mb: 3 }}>
-                        <Label htmlFor="lastName">Last Name</Label>
-                        <Field as={Input} id="lastName" name="lastName" />
-                        <ErrorMessage component={ErrorText} name="lastName" />
-                    </Box>
-                    <Box sx={{ mb: 3 }}>
-                        <Label htmlFor="email">Email</Label>
-                        <Field as={Input} id="email" name="email" />
-                        <ErrorMessage component={ErrorText} name="email" />
-                    </Box>
+                    <ComposedField label="First Name" name="firstName" />
+                    <ComposedField label="Last Name" name="lastName" />
+                    <ComposedField label="Email" name="email" type="email" />
+                    <ComposedField
+                        as={Textarea}
+                        helpText="Give us your honest thoughts"
+                        label="Message"
+                        name="message"
+                        type="message"
+                    />
                     <Button type="submit">Contact Me!</Button>
                 </Form>
             </Formik>

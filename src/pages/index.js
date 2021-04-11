@@ -29,6 +29,7 @@ const useForm = initialValues => {
 const IndexPage = () => {
     const [formState, setFormState] = useForm({
         firstName: '',
+        lastName: '',
         email: ''
     });
 
@@ -65,6 +66,15 @@ const IndexPage = () => {
                         id="firstName"
                         name="firstName"
                         value={formState.firstName}
+                        onChange={setFormState}
+                    />
+                </Box>
+                <Box sx={{ mb: 4 }}>
+                    <Label htmlFor="firstName">Last Name</Label>
+                    <Input
+                        id="lastName"
+                        name="lastName"
+                        value={formState.lastName}
                         onChange={setFormState}
                     />
                 </Box>

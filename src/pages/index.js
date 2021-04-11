@@ -101,7 +101,6 @@ const IndexPage = () => {
                         helpText="Give us your honest thoughts"
                         label="Message"
                         name="message"
-                        type="message"
                     />
                     <Button type="submit">Contact Me!</Button>
                 </Form>

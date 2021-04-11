@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Input, Label } from 'theme-ui';
+import { Box, Button, Input, Label } from 'theme-ui';
 
 const Constants = {
     FORM_NAME: 'contact'
@@ -77,6 +77,7 @@ const IndexPage = () => {
                         onChange={setFormState}
                     />
                 </Box>
+                <Button type="submit">Contact Me!</Button>
             </form>
         </main>
     );
